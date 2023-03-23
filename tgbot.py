@@ -10,7 +10,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 
 class IsReplyFilter(MessageFilter):
     def filter(self, message):
-        return message.reply_to_message is not None
+        return message.reply_to_message is not None or message.chat.title is None
 
 class AllowedChatIDFilter(MessageFilter):
     def filter(self, message):

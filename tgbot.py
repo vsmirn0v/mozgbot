@@ -54,6 +54,11 @@ def start(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(f"Хола человеки! Чем я могу помочь вам сегодня? chat_id: {chat_id}")
     logging.info(f"Start initiated from chat_id: {chat_id}")
     
+def log_incoming_message(update: Update, context: CallbackContext):
+    user_id = update.message.from_user.id
+    chat_id = update.message.chat_id
+    message_text = update.message.text
+    logging.info(f"Incoming message: User ID: {user_id}, Chat ID: {chat_id}, Message: {message_text}")
 
 def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     if update.channel_post:  # Check if the update comes from a channel
@@ -117,6 +122,7 @@ allowed_chat_ids_filter = AllowedChatIDFilter()
 
 dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & unauthorized_chat_ids_filter, unauthorized_chat))
 dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & allowed_chat_ids_filter, chat_with_gpt))
+dispatcher.add_handler(MessageHandler(Filters.all, log_incoming_message))
 
 # Start the Bot
 updater.start_polling()

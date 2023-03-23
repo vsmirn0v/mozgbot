@@ -46,15 +46,13 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 # Load your OpenAI API key and Telegram token
 openai.api_key = os.environ["OPENAI_API_KEY"]
 telegram_token = os.environ["TELEGRAM_TOKEN"]
-allowed_chat_ids = os.environ["TELEGRAM_CHAT_IDS"]
-allowed_user_names = os.environ["TELEGRAM_USER_NAMES"]
 
 TELEGRAM_CHAT_IDS = os.environ.get("TELEGRAM_CHAT_IDS", "")
 TELEGRAM_USER_NAMES = os.environ.get("TELEGRAM_USER_NAMES", "")
 
 allowed_chat_ids = [int(chat_id.strip()) for chat_id in TELEGRAM_CHAT_IDS.split(",") if chat_id.strip()]
 allowed_user_names = [str(user_name.strip()) for user_name in TELEGRAM_USER_NAMES.split(",") if user_name.strip()]
-
+print(allowed_user_names)
 # Load the training prompts from a JSON configuration file
 with open("training_prompts.json", "r") as f:
     training_prompts = json.load(f)

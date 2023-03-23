@@ -151,10 +151,9 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     try:
         openai_response = openai.ChatCompletion.create(**openai_params)
     except Exception as e:
-        job.schedule_removal()
         logging.info(f"{str(e)}")
         if "maximum context length is" in str(e):
-            logging.info(f"Maimum tokens reached. Truncating context and retrying...")
+            logging.info(f"Maximum tokens reached. Truncating context and retrying...")
             update.message.reply_text(f"Мой контекст переполнился. Я удалю из него историю старых сообщений и попробую снова...")
             max_tokens = int(str(e).split("maximum context length is ")[1].split(" tokens")[0]) - num_tokens_from_list(training_prompts) - 1024
             #max_tokens = openai_params["max_tokens"] - sum(len(token) for token in training_prompts)
@@ -171,6 +170,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
             openai_response = openai.ChatCompletion.create(**openai_params)
             history = conversation_history_truncated
         else:
+            job.schedule_removal()
             update.message.reply_text(f"Возникли проблемы, попробуйте повторить запрос позже.")
             raise e
     # except openai.error.InvalidRequestError as e:

@@ -78,7 +78,11 @@ dispatcher = updater.dispatcher
 
 # Add handlers
 dispatcher.add_handler(CommandHandler("start", start))
-dispatcher.add_handler(MessageHandler((Filters.text | Filters.channel) & ~Filters.command, chat_with_gpt))
+class ChannelTextFilter(Filters.text):
+    def filter(self, message):
+        return message.chat.type == "channel"
+
+dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) | ChannelTextFilter(), chat_with_gpt))
 
 # Start the Bot
 updater.start_polling()

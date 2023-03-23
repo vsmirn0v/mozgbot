@@ -114,7 +114,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     openai_params = {}
     openai_params["engine"] = "text-davinci-003"
     openai_params["prompt"] = (f"{training_prompts}\n{history}")
-    openai_params["max_tokens"] = 768
+    openai_params["max_tokens"] = 1024
     openai_params["n"] = 1
     openai_params["stop"] = None
     openai_params["temperature"] = 0.5

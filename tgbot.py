@@ -137,7 +137,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     
     # GPT-related code
     openai_params = {}
-    openai_params["model"] = "text-davinci-002-render-sha" #"gpt-3.5-turbo"
+    openai_params["model"] = "text-davinci-002" #"gpt-3.5-turbo"
     openai_params["messages"] = training_prompts + history
     #openai_params["max_tokens"] = 1024
     #openai_params["messsage"] = 1024

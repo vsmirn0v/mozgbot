@@ -111,7 +111,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     logging.info(f"Request: User: {user_name}, Chat: {chat_name}, Is reply: {is_reply}, Message: {user_message}")
 
     # Retrieve conversation history or create an empty history
-    history = json.loads(conversation_history.get(str(chat_id), "[]"))
+    history = conversation_history.get(str(chat_id), "[]")
     if not isinstance(history, list):
         history = []
 

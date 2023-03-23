@@ -34,7 +34,7 @@ def num_tokens_from_list(in_list: list) -> int:
     encoding = tiktoken.get_encoding(encoding_name)
     num_tokens = 0
     for message in in_list:
-        num_tokens += len(encoding.encode(message.content))
+        num_tokens += len(encoding.encode(message['content']))
     return num_tokens
 
 # Replace with your desired bot names

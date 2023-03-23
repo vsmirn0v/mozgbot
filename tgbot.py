@@ -118,6 +118,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     # Add user message to the conversation history
     #history += f"{user_name}: {user_message}\nAI: "
     history = history.append({"role": "user", "content": f"{user_name}: {user_message}"})
+    logging.info(json.dumps(history))
 
     # Record the start time
     start_time = time.perf_counter()

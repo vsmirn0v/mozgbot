@@ -89,6 +89,11 @@ unauthorized_chat_ids_filter = UnauthorizedChatIDFilter()
 def start(update: Update, context: CallbackContext) -> None:
     chat_name = update.message.chat.title
     chat_id = update.message.chat_id
+    user_id = update.message.from_user.id
+    try:
+        user_name = update.message.from_user.name
+    except:
+        user_name = "None"
 
 
     update.message.reply_text(f"Хола, человеки\! Меня зовут Гарсон и я здесь, чтобы ~захватить мир~ сделать вашу жизнь чуточку проще\.",parse_mode='MarkdownV2')
@@ -96,7 +101,7 @@ def start(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(f"В личных чатах я отвечаю на все сообщения.")
     update.message.reply_text(f"Чем я могу помочь вам сегодня?")
 
-    logging.info(f"Start initiated from chat: {chat_name} chat id: {chat_id}")
+    logging.info(f"Start initiated from chat: {chat_name} chat id: {chat_id} user name: {user_name} user id: {user_id}")
     
 def log_incoming_message(update: Update, context: CallbackContext):
     user_id = update.message.from_user.id

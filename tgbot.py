@@ -140,7 +140,6 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
         openai_response = openai.ChatCompletion.create(**openai_params)
     except Exception as e:
         job.schedule_removal()
-        logging.info(f"{openai_response}")
         if "InvalidRequestError" in str(e):
             if "maximum context length is" in str(e):
                 logging.info(f"Maimum tokens reached. Truncating context and retrying...")

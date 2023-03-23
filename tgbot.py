@@ -28,7 +28,7 @@ def send_still_processing(context: CallbackContext):
 
 
 # Replace with your desired bot names
-bot_names = ["гарсон", "garcon", "garcón", "@garcon_devops_bot"]
+bot_names = ["гарсон", "garcon", "garcón", "garcon_devops_bot"]
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -74,7 +74,10 @@ unauthorized_chat_ids_filter = UnauthorizedChatIDFilter()
 def start(update: Update, context: CallbackContext) -> None:
     chat_name = update.message.chat.title
 
-    update.message.reply_text(f"Хола человеки! Чем я могу помочь вам сегодня?")
+    update.message.reply_text(f"Хола человеки! Меня зовут Гарсон и я здесь, чтобы  ̶з̶а̶х̶в̶а̶т̶и̶т̶ь̶ ̶м̶и̶р̶ сделать вашу жизнь чуточку проще.")
+    update.message.reply_text(f"Я отвечаю только на прямые обращения по моему имени гарсон, garcon или garcon_devops_bot. А так же отвечаю на ответы на мои сообщения.")
+    update.message.reply_text(f"Чем я могу помочь вам сегодня?")
+
     logging.info(f"Start initiated from chat_id: {chat_name}")
     
 def log_incoming_message(update: Update, context: CallbackContext):

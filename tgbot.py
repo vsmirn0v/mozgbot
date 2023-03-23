@@ -29,7 +29,19 @@ def save_conversation_history():
         json.dump(conversation_history, f)
 
 # Set up logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+def unauthorized_chat(update: Update, context: CallbackContext):
+    user_id = update.message.from_user.id
+    message_text = update.message.text
+    logging.info(f"Unauthorized access: User ID: {user_id}, Message: {message_text}")
+    update.message.reply_text("Доступ запрещен.")
+    
+class UnauthorizedChatIDFilter(MessageFilter):
+    def filter(self, message):
+        return message.chat_id not in allowed_chat_ids
+
+unauthorized_chat_ids_filter = UnauthorizedChatIDFilter()
 
 def start(update: Update, context: CallbackContext) -> None:
     update.message.reply_text("Хола человеки! Чем я могу помочь вам сегодня?")
@@ -83,6 +95,7 @@ dispatcher = updater.dispatcher
 dispatcher.add_handler(CommandHandler("start", start))
 allowed_chat_ids_filter = AllowedChatIDFilter()
 
+dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & unauthorized_chat_ids_filter, unauthorized_chat))
 dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & allowed_chat_ids_filter, chat_with_gpt))
 
 # Start the Bot

@@ -138,27 +138,30 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
 
     try:
         openai_response = openai.ChatCompletion.create(**openai_params)
-    except openai.error.InvalidRequestError as e:
-        # If the error is due to maximum content length, truncate the conversation history and retry the request
-        if "maximum context length is" in str(e):
-            logging.info(f"Maimum tokens reached. Truncating context and retrying...")
-            max_tokens = int(str(e).split("maximum context length is ")[1].split(" tokens")[0]) - sum(len(token) for token in training_prompts)
-            #max_tokens = openai_params["max_tokens"] - sum(len(token) for token in training_prompts)
-            conversation_history_truncated = []
-            logging.info(f"HST: {history}")
-            for message in reversed(history):
-                if sum(len(token) for token in conversation_history_truncated) < max_tokens:
-                    conversation_history_truncated.append(message)
-                else:
-                    break
-            logging.info(f"HSTT: {conversation_history_truncated}")
+    except Exception as e:
+        job.schedule_removal()
+        update.message.reply_text(f"Возникли проблемы, попробуйте повторить запрос позже.")
+    # except openai.error.InvalidRequestError as e:
+    #     # If the error is due to maximum content length, truncate the conversation history and retry the request
+    #     if "maximum context length is" in str(e):
+    #         logging.info(f"Maimum tokens reached. Truncating context and retrying...")
+    #         max_tokens = int(str(e).split("maximum context length is ")[1].split(" tokens")[0]) - sum(len(token) for token in training_prompts)
+    #         #max_tokens = openai_params["max_tokens"] - sum(len(token) for token in training_prompts)
+    #         conversation_history_truncated = []
+    #         logging.info(f"HST: {history}")
+    #         for message in reversed(history):
+    #             if sum(len(token) for token in conversation_history_truncated) < max_tokens:
+    #                 conversation_history_truncated.append(message)
+    #             else:
+    #                 break
+    #         logging.info(f"HSTT: {conversation_history_truncated}")
 
-            openai_params["prompt"] = (f"{training_prompts}\n{list(reversed(conversation_history_truncated))}")
-            openai_response = openai.ChatCompletion.create(**openai_params)
-            history = conversation_history_truncated
-        else:
-            job.schedule_removal()
-            raise e
+    #         openai_params["prompt"] = (f"{training_prompts}\n{list(reversed(conversation_history_truncated))}")
+    #         openai_response = openai.ChatCompletion.create(**openai_params)
+    #         history = conversation_history_truncated
+    #     else:
+    #        job.schedule_removal()
+    #        raise e
     response = openai_response.choices[0].message.content.strip()
     
     elapsed_time = time.perf_counter() - start_time

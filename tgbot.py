@@ -38,8 +38,9 @@ def save_conversation_history():
 
 def unauthorized_chat(update: Update, context: CallbackContext):
     user_id = update.message.from_user.id
+    chat_id = update.message.chat_id
     message_text = update.message.text
-    logging.info(f"Unauthorized access: User ID: {user_id}, Message: {message_text}")
+    logging.info(f"Unauthorized access: User ID: {user_id}, Chat ID: {chat_id}, Message: {message_text}")
     update.message.reply_text("Доступ запрещен.")
     
 class UnauthorizedChatIDFilter(MessageFilter):

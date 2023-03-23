@@ -82,7 +82,7 @@ def unauthorized_chat(update: Update, context: CallbackContext):
     
 class UnauthorizedChatIDFilter(MessageFilter):
     def filter(self, message):
-        return message.chat_id not in allowed_chat_ids or message.from_user.name not in allowed_user_names
+        return not (message.chat_id in allowed_chat_ids or message.from_user.name in allowed_user_names)
 
 unauthorized_chat_ids_filter = UnauthorizedChatIDFilter()
 

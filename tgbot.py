@@ -8,7 +8,11 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 class AllowedChatIDFilter(MessageFilter):
     def filter(self, message):
         return message.chat_id in allowed_chat_ids
-    
+
+
+# Set up logging
+logging.basicConfig(level=logging.WARN, format='%(asctime)s - %(levelname)s - %(message)s')
+
 # Load your OpenAI API key and Telegram token
 openai.api_key = os.environ["OPENAI_API_KEY"]
 telegram_token = os.environ["TELEGRAM_TOKEN"]
@@ -32,9 +36,6 @@ def save_conversation_history():
     with open("conversation_history.json", "w") as f:
         json.dump(conversation_history, f)
 
-# Set up logging
-logging.basicConfig(level=logging.WARN, format='%(asctime)s - %(levelname)s - %(message)s')
-
 def unauthorized_chat(update: Update, context: CallbackContext):
     user_id = update.message.from_user.id
     message_text = update.message.text
@@ -48,10 +49,9 @@ class UnauthorizedChatIDFilter(MessageFilter):
 unauthorized_chat_ids_filter = UnauthorizedChatIDFilter()
 
 def start(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text("Хола человеки! Чем я могу помочь вам сегодня?")
+    update.message.reply_text("Хола человеки! Чем я могу помочь вам сегодня? chat_id: {chat_id}")
     chat_id = update.message.chat_id
     logging.info(f"Start initiated from chat_id: {chat_id}")
-
     
 
 def chat_with_gpt(update: Update, context: CallbackContext) -> None:

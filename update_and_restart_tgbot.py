@@ -4,7 +4,7 @@ import time
 from git import Repo
 
 # Configuration
-repository_url = "git@github.com:vsmirn0v/mozgbot.git"
+repository_url = "https://github.com/vsmirn0v/mozgbot.git"
 local_repository_path = "/path/to/your/local/repo"
 tgbot_script = "tgbot.py"
 restart_delay = 5

@@ -64,6 +64,9 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     # Add user message to the conversation history
     history += f"User: {user_message}\nAI: "
 
+    # Record the start time
+    start_time = time.perf_counter()
+    
     # GPT-related code
     openai_response = openai.Completion.create(
         engine="text-davinci-003",
@@ -75,6 +78,12 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     )
 
     response = openai_response.choices[0].text.strip()
+    
+    elapsed_time = time.perf_counter() - start_time
+    
+    tokens_used = response.get("usage", {}).get("total_tokens", 0)
+    
+    logging.info(f"Time consumed: {elapsed_time:.2f} seconds, Tokens consumed: {tokens_used}")
 
     # Add AI response to the conversation history
     history += f"{response}\n"

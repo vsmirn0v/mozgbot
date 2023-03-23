@@ -85,7 +85,7 @@ def log_incoming_message(update: Update, context: CallbackContext):
     message_text = update.message.text
     logging.info(f"Incoming message: User: {user_name}, Chat: {chat_name}, Message: {message_text}")
 
-async def chat_with_gpt(update: Update, context: CallbackContext) -> None:
+def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     if update.channel_post:  # Check if the update comes from a channel
         user_message = update.channel
         user_message = update.channel_post.text

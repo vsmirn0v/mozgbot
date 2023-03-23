@@ -114,14 +114,14 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     history = conversation_history.get(str(chat_id), "")
 
     # Add user message to the conversation history
-    history += f"User: {user_name}\nMessage: {user_message}\nAI: "
+    history += f"{user_name}: {user_message}\nAI: "
 
     # Record the start time
     start_time = time.perf_counter()
     
     # GPT-related code
     openai_params = {}
-    openai_params["engine"] = "text-davinci-003"
+    openai_params["engine"] = "gpt-3.5-turbo"
     openai_params["prompt"] = (f"{training_prompts}\n{history}")
     openai_params["max_tokens"] = 1024
     openai_params["n"] = 1
@@ -145,12 +145,13 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
                     conversation_history_truncated.append(message)
                 else:
                     break
-            #logging.info(f"HSTT: {conversation_history_truncated}")
+            logging.info(f"HSTT: {conversation_history_truncated}")
 
             openai_params["prompt"] = (f"{training_prompts}\n{list(reversed(conversation_history_truncated))}")
             openai_response = openai.Completion.create(**openai_params)
             history = conversation_history_truncated
         else:
+            job.schedule_removal()
             raise e
     response = openai_response.choices[0].text.strip()
     

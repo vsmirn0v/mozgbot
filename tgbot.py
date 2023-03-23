@@ -82,7 +82,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     
     elapsed_time = time.perf_counter() - start_time
     
-    tokens_used = response.get("usage", {}).get("total_tokens", 0)
+    tokens_used = openai_response.get("usage", {}).get("total_tokens", 0)
     
     logging.info(f"Time consumed: {elapsed_time:.2f} seconds, Tokens consumed: {tokens_used}")
 

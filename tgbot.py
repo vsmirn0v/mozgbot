@@ -78,11 +78,11 @@ dispatcher = updater.dispatcher
 
 # Add handlers
 dispatcher.add_handler(CommandHandler("start", start))
-class ChannelTextFilter:
+class AllowedChatIDFilter:
     def __call__(self, update: Update):
-        return update.message and update.message.chat.type == "channel" and update.message.text is not None
+        return update.message and update.message.chat_id in allowed_chat_ids
 
-dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) | ChannelTextFilter(), chat_with_gpt))
+dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & AllowedChatIDFilter(), chat_with_gpt))
 
 # Start the Bot
 updater.start_polling()

@@ -74,7 +74,7 @@ unauthorized_chat_ids_filter = UnauthorizedChatIDFilter()
 def start(update: Update, context: CallbackContext) -> None:
     chat_name = update.message.chat.title
 
-    update.message.reply_text(f"Хола человеки! Меня зовут Гарсон и я здесь, чтобы ~захватить мир~ сделать вашу жинзь чуточку проще.",parse_mode='MarkdownV2')
+    update.message.reply_text(f"Хола, человеки\! Меня зовут Гарсон и я здесь, чтобы ~захватить мир~ сделать вашу жинзь чуточку проще.",parse_mode='MarkdownV2')
     update.message.reply_text(f"Я отвечаю только на прямые обращения по моему имени гарсон, garcon или garcon_devops_bot. А так же отвечаю на ответы на мои сообщения.")
     update.message.reply_text(f"Чем я могу помочь вам сегодня?")
 

@@ -123,11 +123,14 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
             max_tokens = int(str(e).split("maximum context length is ")[1].split(" tokens")[0]) - sum(len(token) for token in training_prompts)
             #max_tokens = openai_params["max_tokens"] - sum(len(token) for token in training_prompts)
             conversation_history_truncated = []
+            logging.info(f"HST: {history}")
             for message in reversed(history):
                 if sum(len(token) for token in conversation_history_truncated) < max_tokens:
                     conversation_history_truncated.append(message)
                 else:
                     break
+            logging.info(f"HSTT: {conversation_history_truncated}")
+
             openai_params["prompt"] = (f"{training_prompts}\n{list(reversed(conversation_history_truncated))}")
             openai_response = openai.Completion.create(**openai_params)
             history = conversation_history_truncated

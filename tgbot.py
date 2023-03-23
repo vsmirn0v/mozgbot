@@ -128,7 +128,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     openai_params["stop"] = None
     openai_params["temperature"] = 0.5
 
-    job = context.job_queue.run_repeating(send_still_processing, interval=8, first=0, context={"chat_id": update.message.chat_id})
+    job = context.job_queue.run_repeating(send_still_processing, interval=10, first=0, context={"chat_id": update.message.chat_id})
 
     try:
         openai_response = openai.Completion.create(**openai_params)

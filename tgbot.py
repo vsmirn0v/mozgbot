@@ -3,6 +3,8 @@ import json
 import openai
 import logging
 import time
+import tiktoken
+
 from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, BaseFilter, MessageFilter
 
@@ -26,6 +28,14 @@ def send_still_processing(context: CallbackContext):
     job = context.job
     context.bot.send_message(chat_id=job.context["chat_id"], text="Ещё думаю... 🧠")
 
+def num_tokens_from_list(in_list: list) -> int:
+    """Returns the number of tokens in a text string."""
+    encoding_name = "gpt2"
+    encoding = tiktoken.get_encoding(encoding_name)
+    num_tokens = 0
+    for message in in_list:
+        num_tokens += len(encoding.encode(message.content))
+    return num_tokens
 
 # Replace with your desired bot names
 bot_names = ["гарсон", "garcon", "garcón", "garcon_devops_bot"]
@@ -144,17 +154,17 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
         if "maximum context length is" in str(e):
             logging.info(f"Maimum tokens reached. Truncating context and retrying...")
             update.message.reply_text(f"Мой контекст переполнился. Я удалю из него историю старых сообщений и попробую снова...")
-            max_tokens = int(str(e).split("maximum context length is ")[1].split(" tokens")[0]) - sum(len(token) for token in training_prompts) - 800
+            max_tokens = int(str(e).split("maximum context length is ")[1].split(" tokens")[0]) - num_tokens_from_list(training_prompts) - 1024
             #max_tokens = openai_params["max_tokens"] - sum(len(token) for token in training_prompts)
             conversation_history_truncated = []
             logging.info(f"HST: {history}")
             for message in reversed(history):
-                if sum(len(token) for token in conversation_history_truncated) < max_tokens:
+                if num_tokens_from_list(conversation_history_truncated) < max_tokens:
                     conversation_history_truncated.append(message)
                 else:
                     break
             logging.info(f"HSTT: {conversation_history_truncated}")
-            logging.info(f"MTOKENS: {max_tokens} TOKENS: {sum(len(token) for token in conversation_history_truncated)}")
+            logging.info(f"MTOKENS: {max_tokens} TOKENS: {num_tokens_from_list(conversation_history_truncated)}")
             openai_params["messages"] = training_prompts + conversation_history_truncated
             openai_response = openai.ChatCompletion.create(**openai_params)
             history = conversation_history_truncated

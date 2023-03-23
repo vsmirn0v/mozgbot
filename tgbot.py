@@ -58,6 +58,8 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     else:
         user_message = update.message.text
         chat_id = update.message.chat.id
+        
+    user_id = update.message.from_user.id
 
     # Retrieve conversation history or create an empty history
     history = conversation_history.get(str(chat_id), "")

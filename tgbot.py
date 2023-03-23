@@ -118,9 +118,10 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
         openai_response = openai.Completion.create(**openai_params)
     except openai.error.InvalidRequestError as e:
         # If the error is due to maximum content length, truncate the conversation history and retry the request
-        if "content must be at most" in str(e):
-            #max_tokens = int(str(e).split("content must be at most ")[1].split(" tokens")[0]) - sum(len(token) for token in training_prompts)
-            max_tokens = openai_params["max_tokens"] - sum(len(token) for token in training_prompts)
+        if "maximum context length is" in str(e):
+            logging.info(f"Maimum tokens reached. Truncating context and retrying...")
+            max_tokens = int(str(e).split("maximum context length is ")[1].split(" tokens")[0]) - sum(len(token) for token in training_prompts)
+            #max_tokens = openai_params["max_tokens"] - sum(len(token) for token in training_prompts)
             conversation_history_truncated = []
             for message in reversed(history):
                 if sum(len(token) for token in conversation_history_truncated) < max_tokens:

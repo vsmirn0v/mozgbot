@@ -112,8 +112,8 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
 
     # Retrieve conversation history or create an empty history
     history = json.loads(conversation_history.get(str(chat_id), "[]"))
-    if not isinstance(history, dict):
-        history = {}
+    if not isinstance(history, list):
+        history = []
 
     # Add user message to the conversation history
     #history += f"{user_name}: {user_message}\nAI: "

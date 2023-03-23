@@ -132,7 +132,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
         conversation_id = user_name
     else:
         conversation_id = str(chat_id)
-    history = conversation_history.get(str(chat_id), "[]")
+    history = conversation_history.get(conversation_id, "[]")
     if not isinstance(history, list):
         history = []
 

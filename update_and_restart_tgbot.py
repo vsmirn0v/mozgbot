@@ -5,7 +5,7 @@ from git import Repo
 
 # Configuration
 repository_url = "https://github.com/vsmirn0v/mozgbot.git"
-local_repository_path = "/path/to/your/local/repo"
+local_repository_path = "./"
 tgbot_script = "tgbot.py"
 restart_delay = 5
 
@@ -14,7 +14,7 @@ def check_for_updates(local_repo):
     origin = local_repo.remotes.origin
     origin.fetch()
     local_commit = local_repo.head.commit.hexsha
-    remote_commit = origin.refs.master.commit.hexsha
+    remote_commit = origin.refs.main.commit.hexsha
     return local_commit != remote_commit
 
 # Function to update the local copy of the repository

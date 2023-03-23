@@ -52,9 +52,11 @@ def save_conversation_history():
 
 def unauthorized_chat(update: Update, context: CallbackContext):
     user_id = update.message.from_user.id
+    user_name = update.message.from_user.name
     chat_id = update.message.chat_id
+    chat_name = update.message.chat.name
     message_text = update.message.text
-    logging.info(f"Unauthorized access: User ID: {user_id}, Chat ID: {chat_id}, Message: {message_text}")
+    logging.info(f"Unauthorized access: User: {user_name}, Chat: {chat_name}, Chat ID: {chat_id}, Message: {message_text}")
     update.message.reply_text("Доступ запрещен.")
     
 class UnauthorizedChatIDFilter(MessageFilter):
@@ -64,16 +66,18 @@ class UnauthorizedChatIDFilter(MessageFilter):
 unauthorized_chat_ids_filter = UnauthorizedChatIDFilter()
 
 def start(update: Update, context: CallbackContext) -> None:
-    chat_id = update.message.chat_id
+    chat_name = update.message.chat.name
 
     update.message.reply_text(f"Хола человеки! Чем я могу помочь вам сегодня?")
-    logging.info(f"Start initiated from chat_id: {chat_id}")
+    logging.info(f"Start initiated from chat_id: {chat_name}")
     
 def log_incoming_message(update: Update, context: CallbackContext):
     user_id = update.message.from_user.id
+    user_name = update.message.from_user.name
     chat_id = update.message.chat_id
+    chat_name = update.message.chat.name
     message_text = update.message.text
-    logging.info(f"Incoming message: User ID: {user_id}, Chat ID: {chat_id}, Message: {message_text}")
+    logging.info(f"Incoming message: User: {user_name}, Chat: {chat_name}, Message: {message_text}")
 
 def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     if update.channel_post:  # Check if the update comes from a channel
@@ -83,7 +87,8 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     else:
         user_message = update.message.text
         chat_id = update.message.chat.id
-        
+
+    chat_name = update.message.chat.name
     user_name = update.message.from_user.name
     reply_to_message = update.message.reply_to_message
     is_reply = reply_to_message and reply_to_message.from_user.id == context.bot.id
@@ -94,13 +99,13 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
         logging.info(f"Reply to other user message. Discarding.")
         return False
 
-    logging.info(f"Request: User ID: {user_id}, Chat ID: {chat_id}, Is reply: {is_reply}, Message: {user_message}")
+    logging.info(f"Request: User: {user_name}, Chat: {chat_name}, Is reply: {is_reply}, Message: {user_message}")
 
     # Retrieve conversation history or create an empty history
     history = conversation_history.get(str(chat_id), "")
 
     # Add user message to the conversation history
-    history += f"User name: {user_name}\nMessage: {user_message}\nAI: "
+    history += f"User: {user_name}\nMessage: {user_message}\nAI: "
 
     # Record the start time
     start_time = time.perf_counter()
@@ -142,7 +147,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     
     tokens_used = openai_response.get("usage", {}).get("total_tokens", 0)
     
-    logging.info(f"Response: User ID: {user_id}, Chat ID: {chat_id}, Time consumed: {elapsed_time:.2f} seconds, Tokens consumed: {tokens_used}, Message: {response}")
+    logging.info(f"Response: User: {user_name}, Chat: {chat_name}, Time consumed: {elapsed_time:.2f} seconds, Tokens consumed: {tokens_used}, Message: {response}")
 
     # Add AI response to the conversation history
     history += f"{response}\n"

@@ -115,7 +115,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     if not isinstance(history, list):
         history = []
 
-    # Add user message to the conversation history
+    # Add user message to the conversation historyf
     #history += f"{user_name}: {user_message}\nAI: "
     history = history.append({"role": "user", "content": f"{user_name}: {user_message}"})
     logging.info(json.dumps(history))

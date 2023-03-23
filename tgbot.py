@@ -6,10 +6,8 @@ import time
 from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, BaseFilter, MessageFilter
 class IsReplyFilter(MessageFilter):
-    def filter(self, message, context: CallbackContext):
-        reply_to_message = message.reply_to_message
-        is_reply = reply_to_message and reply_to_message.from_user.id == context.bot.id
-        return is_reply
+    def filter(self, message):
+        return message.reply_to_message is not None
 
 class AllowedChatIDFilter(MessageFilter):
     def filter(self, message):
@@ -90,6 +88,11 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     is_reply = reply_to_message and reply_to_message.from_user.id == context.bot.id
  
     user_id = update.message.from_user.id
+
+    if not (BotNameFilter(bot_names) or is_reply):
+        logging.info(f"Reply to other user message. Discarding.")
+        continue
+
     logging.info(f"Request: User ID: {user_id}, Chat ID: {chat_id}, Is reply: {is_reply}, Message: {user_message}")
 
     # Retrieve conversation history or create an empty history

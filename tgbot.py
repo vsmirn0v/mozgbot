@@ -52,7 +52,7 @@ TELEGRAM_USER_NAMES = os.environ.get("TELEGRAM_USER_NAMES", "")
 
 allowed_chat_ids = [int(chat_id.strip()) for chat_id in TELEGRAM_CHAT_IDS.split(",") if chat_id.strip()]
 allowed_user_names = [str(user_name.strip()) for user_name in TELEGRAM_USER_NAMES.split(",") if user_name.strip()]
-print(allowed_user_names)
+
 # Load the training prompts from a JSON configuration file
 with open("training_prompts.json", "r") as f:
     training_prompts = json.load(f)
@@ -76,6 +76,8 @@ def unauthorized_chat(update: Update, context: CallbackContext):
     chat_name = update.message.chat.title
     message_text = update.message.text
     logging.info(f"Unauthorized access: User: {user_name}, Chat: {chat_name}, Chat ID: {chat_id}, Message: {message_text}")
+    logging.info(f"Allowed user names: {allowed_user_names}")
+
     update.message.reply_text("Доступ запрещен.")
     
 class UnauthorizedChatIDFilter(MessageFilter):

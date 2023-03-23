@@ -3,7 +3,7 @@ import json
 import openai
 import logging
 from telegram import Update, ForceReply
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, BaseFilter
 
 # Load your OpenAI API key and Telegram token
 openai.api_key = os.environ["OPENAI_API_KEY"]
@@ -78,9 +78,9 @@ dispatcher = updater.dispatcher
 
 # Add handlers
 dispatcher.add_handler(CommandHandler("start", start))
-class ChannelTextFilter(Filters.text):
-    def filter(self, message):
-        return message.chat.type == "channel"
+class ChannelTextFilter(BaseFilter):
+    def filter(self, update: Update):
+        return update.message.chat.type == "channel" and update.message.text is not None
 
 dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) | ChannelTextFilter(), chat_with_gpt))
 

@@ -54,7 +54,7 @@ def unauthorized_chat(update: Update, context: CallbackContext):
     user_id = update.message.from_user.id
     user_name = update.message.from_user.name
     chat_id = update.message.chat_id
-    chat_name = update.message.chat.name
+    chat_name = update.message.chat.title
     message_text = update.message.text
     logging.info(f"Unauthorized access: User: {user_name}, Chat: {chat_name}, Chat ID: {chat_id}, Message: {message_text}")
     update.message.reply_text("Доступ запрещен.")
@@ -66,7 +66,7 @@ class UnauthorizedChatIDFilter(MessageFilter):
 unauthorized_chat_ids_filter = UnauthorizedChatIDFilter()
 
 def start(update: Update, context: CallbackContext) -> None:
-    chat_name = update.message.chat.name
+    chat_name = update.message.chat.title
 
     update.message.reply_text(f"Хола человеки! Чем я могу помочь вам сегодня?")
     logging.info(f"Start initiated from chat_id: {chat_name}")
@@ -75,7 +75,7 @@ def log_incoming_message(update: Update, context: CallbackContext):
     user_id = update.message.from_user.id
     user_name = update.message.from_user.name
     chat_id = update.message.chat_id
-    chat_name = update.message.chat.name
+    chat_name = update.message.chat.title
     message_text = update.message.text
     logging.info(f"Incoming message: User: {user_name}, Chat: {chat_name}, Message: {message_text}")
 
@@ -88,7 +88,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
         user_message = update.message.text
         chat_id = update.message.chat.id
 
-    chat_name = update.message.chat_name
+    chat_name = update.message.chat.title
     user_name = update.message.from_user.name
     reply_to_message = update.message.reply_to_message
     is_reply = reply_to_message and reply_to_message.from_user.id == context.bot.id

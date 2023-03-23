@@ -6,7 +6,7 @@ import time
 from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, BaseFilter, MessageFilter
 class IsReplyFilter(MessageFilter):
-    def filter(self, message):
+    def filter(self, message, context: CallbackContext):
         reply_to_message = message.reply_to_message
         is_reply = reply_to_message and reply_to_message.from_user.id == context.bot.id
         return is_reply

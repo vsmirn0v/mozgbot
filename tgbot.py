@@ -139,11 +139,11 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     openai_params = {}
     openai_params["model"] = "gpt-3.5-turbo"
     openai_params["messages"] = training_prompts + history
+    openai_params["temperature"] = 0.5
     #openai_params["max_tokens"] = 1024
     #openai_params["messsage"] = 1024
    # openai_params["n"] = 1
    # openai_params["stop"] = None
-   # openai_params["temperature"] = 0.5
     #logging.info(json.dumps(openai_params["messages"]))
     #max_tokens = 4096 - num_tokens_from_list(training_prompts) - 1024
    #logging.info(f"MTOKENS: {max_tokens} TOKENS: {num_tokens_from_list(training_prompts + history)}")

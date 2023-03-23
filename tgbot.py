@@ -141,7 +141,7 @@ dispatcher = updater.dispatcher
 dispatcher.add_handler(CommandHandler("start", start))
 
 dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & unauthorized_chat_ids_filter, unauthorized_chat))
-dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & AllowedChatIDFilter() & BotNameFilter(bot_names) & IsReplyFilter(), chat_with_gpt))
+dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & AllowedChatIDFilter() & (BotNameFilter(bot_names) | IsReplyFilter()), chat_with_gpt))
 dispatcher.add_handler(MessageHandler(Filters.all, log_incoming_message))
 
 # Start the Bot

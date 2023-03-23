@@ -162,8 +162,9 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     #     else:
     #        job.schedule_removal()
     #        raise e
+    logging.info(f"{openai_response}")
     response = openai_response.choices[0].message.content.strip()
-   # logging.info(f"{openai_response}")
+   
     
     elapsed_time = time.perf_counter() - start_time
     job.schedule_removal()

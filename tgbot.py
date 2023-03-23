@@ -140,6 +140,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
         openai_response = openai.ChatCompletion.create(**openai_params)
     except Exception as e:
         job.schedule_removal()
+        logging.info(f"{openai_response}")
         update.message.reply_text(f"Возникли проблемы, попробуйте повторить запрос позже.")
     # except openai.error.InvalidRequestError as e:
     #     # If the error is due to maximum content length, truncate the conversation history and retry the request
@@ -162,7 +163,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     #     else:
     #        job.schedule_removal()
     #        raise e
-    logging.info(f"{openai_response}")
+    
     response = openai_response.choices[0].message.content.strip()
    
     

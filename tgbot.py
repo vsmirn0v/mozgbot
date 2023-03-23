@@ -5,6 +5,12 @@ import logging
 import time
 from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, BaseFilter, MessageFilter
+class IsReplyFilter(MessageFilter):
+    def filter(self, message):
+        reply_to_message = update.message.reply_to_message
+        is_reply = reply_to_message and reply_to_message.from_user.id == context.bot.id
+        return is_reply
+
 class AllowedChatIDFilter(MessageFilter):
     def filter(self, message):
         return message.chat_id in allowed_chat_ids
@@ -133,11 +139,9 @@ dispatcher = updater.dispatcher
 
 # Add handlers
 dispatcher.add_handler(CommandHandler("start", start))
-allowed_chat_ids_filter = AllowedChatIDFilter()
-bot_name_filter = BotNameFilter(bot_names)
 
 dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & unauthorized_chat_ids_filter, unauthorized_chat))
-dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & allowed_chat_ids_filter & bot_name_filter, chat_with_gpt))
+dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & AllowedChatIDFilter() & BotNameFilter(bot_names) & IsReplyFilter(), chat_with_gpt))
 dispatcher.add_handler(MessageHandler(Filters.all, log_incoming_message))
 
 # Start the Bot

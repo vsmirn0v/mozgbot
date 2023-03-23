@@ -143,8 +143,8 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
    # openai_params["stop"] = None
    # openai_params["temperature"] = 0.5
     #logging.info(json.dumps(openai_params["messages"]))
-    max_tokens = 4096 - num_tokens_from_list(training_prompts) - 1024
-    logging.info(f"MTOKENS: {max_tokens} TOKENS: {num_tokens_from_list(training_prompts + history)}")
+    #max_tokens = 4096 - num_tokens_from_list(training_prompts) - 1024
+   #logging.info(f"MTOKENS: {max_tokens} TOKENS: {num_tokens_from_list(training_prompts + history)}")
 
     job = context.job_queue.run_repeating(send_still_processing, interval=15, first=0, context={"chat_id": update.message.chat_id})
 

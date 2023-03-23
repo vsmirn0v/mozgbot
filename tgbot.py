@@ -129,7 +129,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
                     conversation_history_truncated.append(message)
                 else:
                     break
-            logging.info(f"HSTT: {conversation_history_truncated}")
+            #logging.info(f"HSTT: {conversation_history_truncated}")
 
             openai_params["prompt"] = (f"{training_prompts}\n{list(reversed(conversation_history_truncated))}")
             openai_response = openai.Completion.create(**openai_params)

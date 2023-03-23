@@ -120,14 +120,14 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
         if "content must be at most" in str(e):
             max_tokens = int(str(e).split("content must be at most ")[1].split(" tokens")[0]) - sum(len(token) for token in training_prompts)
             conversation_history_truncated = []
-            for message in reversed(conversation_history):
+            for message in reversed(history):
                 if sum(len(token) for token in conversation_history_truncated) < max_tokens:
                     conversation_history_truncated.append(message)
                 else:
                     break
             openai_params["prompt"] = (f"{training_prompts}\n{list(reversed(conversation_history_truncated))}")
             openai_response = openai.Completion.create(**openai_params)
-            conversation_history = conversation_history_truncated
+            history = conversation_history_truncated
         else:
             raise e
     response = openai_response.choices[0].text.strip()

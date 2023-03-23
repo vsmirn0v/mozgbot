@@ -108,7 +108,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     # GPT-related code
     openai_response = openai.Completion.create(
         engine="text-davinci-003",
-        prompt=(f"{training_prompts}\n{history}\nUser: {user_name}"),
+        prompt=(f"{training_prompts}\n{history}"),
         max_tokens=150,
         n=1,
         stop=None,

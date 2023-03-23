@@ -170,7 +170,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
 
     # Add AI response to the conversation history
     #history += f"{response}\n"
-    history = history.append({"role": "assistant", "content": response})
+    history = history + [{"role": "assistant", "content": response}]
 
     # Update conversation history for the user or channel
     conversation_history[str(chat_id)] = history

@@ -24,7 +24,7 @@ class BotNameFilter(MessageFilter):
 def send_still_processing(context: CallbackContext):
     """Sends a 'still processing' message to the chat."""
     job = context.job
-    context.bot.send_message(chat_id=job.context["chat_id"], text="Still processing, please wait...")
+    context.bot.send_message(chat_id=job.context["chat_id"], text="Ещё думаю... 🧠")
 
 
 # Replace with your desired bot names
@@ -125,7 +125,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     openai_params["stop"] = None
     openai_params["temperature"] = 0.5
 
-    job = context.job_queue.run_repeating(send_still_processing, interval=2, first=0, context={"chat_id": update.message.chat_id})
+    job = context.job_queue.run_repeating(send_still_processing, interval=8, first=0, context={"chat_id": update.message.chat_id})
 
     try:
         openai_response = openai.Completion.create(**openai_params)

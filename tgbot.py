@@ -90,11 +90,11 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
  
     user_id = update.message.from_user.id
 
-    if not (BotNameFilter(bot_names) or is_reply):
+    if not (any(bot_name.lower() in user_message.text.lower() for bot_name in bot_names) or is_reply):
         logging.info(f"Reply to other user message. Discarding.")
         return False
 
-    logging.info(f"Request: User ID: {user_id}, Chat ID: {chat_id}, BF: {BotNameFilter(bot_names)}, Is reply: {is_reply}, Message: {user_message}")
+    logging.info(f"Request: User ID: {user_id}, Chat ID: {chat_id}, Is reply: {is_reply}, Message: {user_message}")
 
     # Retrieve conversation history or create an empty history
     history = conversation_history.get(str(chat_id), "")

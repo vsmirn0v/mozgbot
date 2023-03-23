@@ -33,7 +33,7 @@ def save_conversation_history():
         json.dump(conversation_history, f)
 
 # Set up logging
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.WARN, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def unauthorized_chat(update: Update, context: CallbackContext):
     user_id = update.message.from_user.id
@@ -84,7 +84,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     
     tokens_used = openai_response.get("usage", {}).get("total_tokens", 0)
     
-    logging.debug(f"Incoming message: User ID: {user_id}, Chat ID: {chat_id}, Time consumed: {elapsed_time:.2f} seconds, Tokens consumed: {tokens_used}, Message: {message_text}")
+    logging.warn(f"Incoming message: User ID: {user_id}, Chat ID: {chat_id}, Time consumed: {elapsed_time:.2f} seconds, Tokens consumed: {tokens_used}, Message: {message_text}")
 
     # Add AI response to the conversation history
     history += f"{response}\n"

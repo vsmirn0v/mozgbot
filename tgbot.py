@@ -154,6 +154,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
                 else:
                     break
             logging.info(f"HSTT: {conversation_history_truncated}")
+            logging.info(f"TOKENS: {sum(len(token) for token in conversation_history_truncated)}")
             openai_params["messages"] = training_prompts + conversation_history_truncated
             openai_response = openai.ChatCompletion.create(**openai_params)
             history = conversation_history_truncated

@@ -106,6 +106,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     start_time = time.perf_counter()
     
     # GPT-related code
+    openai_params = {}
     openai_params["engine"] = "text-davinci-003"
     openai_params["prompt"] = (f"{training_prompts}\n{history}")
     openai_params["max_tokens"] = 768

@@ -117,7 +117,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     user_id = update.message.from_user.id
 
     if not (any(bot_name.lower() in user_message.lower() for bot_name in bot_names) or is_reply) or chat_name is not None:
-        logging.info(f"Reply to other user message. Discarding.")
+        logging.info(f"Reply to other user message. Discarding {chat_name}.")
         return False
 
     logging.info(f"Request: User: {user_name}, Chat: {chat_name}, Is reply: {is_reply}, Message: {user_message}")

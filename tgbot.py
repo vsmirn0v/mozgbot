@@ -120,18 +120,15 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     # Record the start time
     start_time = time.perf_counter()
     
-    messages = training_prompts.append(history)
     # GPT-related code
     openai_params = {}
     openai_params["model"] = "gpt-3.5-turbo"
-    openai_params["messages"] = messages
+    openai_params["messages"] = training_prompts + history
     #openai_params["max_tokens"] = 1024
     #openai_params["messsage"] = 1024
    # openai_params["n"] = 1
    # openai_params["stop"] = None
    # openai_params["temperature"] = 0.5
-
-    logging.info(json.dumps(training_prompts))
 
     job = context.job_queue.run_repeating(send_still_processing, interval=10, first=0, context={"chat_id": update.message.chat_id})
 

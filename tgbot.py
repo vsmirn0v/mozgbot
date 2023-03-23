@@ -84,6 +84,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
         user_message = update.message.text
         chat_id = update.message.chat.id
         
+    user_name = update.message.from_user.name
     reply_to_message = update.message.reply_to_message
     is_reply = reply_to_message and reply_to_message.from_user.id == context.bot.id
  
@@ -91,7 +92,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
 
     if not (BotNameFilter(bot_names) or is_reply):
         logging.info(f"Reply to other user message. Discarding.")
-        return false
+        return False
 
     logging.info(f"Request: User ID: {user_id}, Chat ID: {chat_id}, Is reply: {is_reply}, Message: {user_message}")
 
@@ -99,7 +100,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     history = conversation_history.get(str(chat_id), "")
 
     # Add user message to the conversation history
-    history += f"User: {user_message}\nAI: "
+    history += f"User ({user_id}): {user_message}\nAI: "
 
     # Record the start time
     start_time = time.perf_counter()
@@ -107,7 +108,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     # GPT-related code
     openai_response = openai.Completion.create(
         engine="text-davinci-003",
-        prompt=(f"{training_prompts}\n{history}"),
+        prompt=(f"{training_prompts}\n{history}\nUser: {user_name}"),
         max_tokens=4096,
         n=1,
         stop=None,

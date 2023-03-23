@@ -90,7 +90,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
  
     user_id = update.message.from_user.id
 
-    if not (any(bot_name.lower() in user_message.text.lower() for bot_name in bot_names) or is_reply):
+    if not (any(bot_name.lower() in user_message.lower() for bot_name in bot_names) or is_reply):
         logging.info(f"Reply to other user message. Discarding.")
         return False
 

@@ -51,7 +51,7 @@ TELEGRAM_CHAT_IDS = os.environ.get("TELEGRAM_CHAT_IDS", "")
 TELEGRAM_USER_NAMES = os.environ.get("TELEGRAM_USER_NAMES", "")
 
 allowed_chat_ids = [int(chat_id.strip()) for chat_id in TELEGRAM_CHAT_IDS.split(",") if chat_id.strip()]
-allowed_user_names = [str(user_name.strip()) for user_name in TELEGRAM_USER_NAMES.split(",") if user_name.strip()]
+allowed_user_names = [f"@{str(user_name.strip())}" for user_name in TELEGRAM_USER_NAMES.split(",") if user_name.strip()]
 
 # Load the training prompts from a JSON configuration file
 with open("training_prompts.json", "r") as f:

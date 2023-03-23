@@ -109,7 +109,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     openai_response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=(f"{training_prompts}\n{history}\nUser: {user_name}"),
-        max_tokens=4096,
+        max_tokens=384,
         n=1,
         stop=None,
         temperature=0.5,

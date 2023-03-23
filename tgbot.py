@@ -3,8 +3,11 @@ import json
 import openai
 import logging
 from telegram import Update, ForceReply
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, BaseFilter
-
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, BaseFilter, MessageFilter
+class AllowedChatIDFilter(MessageFilter):
+    def filter(self, message):
+        return message.chat_id in allowed_chat_ids
+    
 # Load your OpenAI API key and Telegram token
 openai.api_key = os.environ["OPENAI_API_KEY"]
 telegram_token = os.environ["TELEGRAM_TOKEN"]
@@ -78,11 +81,9 @@ dispatcher = updater.dispatcher
 
 # Add handlers
 dispatcher.add_handler(CommandHandler("start", start))
-class AllowedChatIDFilter:
-    def __call__(self, update: Update):
-        return update.message and update.message.chat_id in allowed_chat_ids
+allowed_chat_ids_filter = AllowedChatIDFilter()
 
-dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & AllowedChatIDFilter(), chat_with_gpt))
+dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & allowed_chat_ids_filter, chat_with_gpt))
 
 # Start the Bot
 updater.start_polling()

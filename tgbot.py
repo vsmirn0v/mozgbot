@@ -88,7 +88,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
         user_message = update.message.text
         chat_id = update.message.chat.id
 
-    chat_name = update.message.chat.name
+    chat_name = update.message.chat_name
     user_name = update.message.from_user.name
     reply_to_message = update.message.reply_to_message
     is_reply = reply_to_message and reply_to_message.from_user.id == context.bot.id

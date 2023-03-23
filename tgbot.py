@@ -9,6 +9,17 @@ class AllowedChatIDFilter(MessageFilter):
     def filter(self, message):
         return message.chat_id in allowed_chat_ids
 
+class BotNameFilter(BaseFilter):
+    def __init__(self, bot_names):
+        self.bot_names = bot_names
+
+    def filter(self, message):
+        return any(bot_name.lower() in message.text.lower() for bot_name in self.bot_names)
+
+# Replace with your desired bot names
+bot_names = ["гарсон", "garcon", "garcón", "@garcon_devops_bot"]
+
+bot_name_filter = BotNameFilter(bot_names)
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -122,7 +133,7 @@ dispatcher.add_handler(CommandHandler("start", start))
 allowed_chat_ids_filter = AllowedChatIDFilter()
 
 dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & unauthorized_chat_ids_filter, unauthorized_chat))
-dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & allowed_chat_ids_filter, chat_with_gpt))
+dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & allowed_chat_ids_filter & bot_name_filter, chat_with_gpt))
 dispatcher.add_handler(MessageHandler(Filters.all, log_incoming_message))
 
 # Start the Bot

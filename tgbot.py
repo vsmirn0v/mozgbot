@@ -80,8 +80,11 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
         user_message = update.message.text
         chat_id = update.message.chat.id
         
+    reply_to_message = update.message.reply_to_message
+    is_reply = reply_to_message and reply_to_message.from_user.id == context.bot.id
+ 
     user_id = update.message.from_user.id
-    logging.info(f"Incoming message: User ID: {user_id}, Chat ID: {chat_id}, Message: {user_message}")
+    logging.info(f"Request: User ID: {user_id}, Chat ID: {chat_id}, Is reply: {is_reply}, Message: {user_message}")
 
     # Retrieve conversation history or create an empty history
     history = conversation_history.get(str(chat_id), "")
@@ -108,7 +111,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     
     tokens_used = openai_response.get("usage", {}).get("total_tokens", 0)
     
-    logging.info(f"Incoming message: User ID: {user_id}, Chat ID: {chat_id}, Time consumed: {elapsed_time:.2f} seconds, Tokens consumed: {tokens_used}, Message: {response}")
+    logging.info(f"Response: User ID: {user_id}, Chat ID: {chat_id}, Time consumed: {elapsed_time:.2f} seconds, Tokens consumed: {tokens_used}, Message: {response}")
 
     # Add AI response to the conversation history
     history += f"{response}\n"

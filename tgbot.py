@@ -49,6 +49,10 @@ unauthorized_chat_ids_filter = UnauthorizedChatIDFilter()
 
 def start(update: Update, context: CallbackContext) -> None:
     update.message.reply_text("Хола человеки! Чем я могу помочь вам сегодня?")
+    chat_id = update.message.chat_id
+    logging.info(f"Start initiated from chat_id: {chat_id}")
+
+    
 
 def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     if update.channel_post:  # Check if the update comes from a channel

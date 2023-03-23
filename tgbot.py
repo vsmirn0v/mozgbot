@@ -159,6 +159,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
             history = conversation_history_truncated
         else:
             update.message.reply_text(f"Возникли проблемы, попробуйте повторить запрос позже.")
+            raise e
     # except openai.error.InvalidRequestError as e:
     #     # If the error is due to maximum content length, truncate the conversation history and retry the request
 

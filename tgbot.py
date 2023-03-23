@@ -9,12 +9,13 @@ class AllowedChatIDFilter(MessageFilter):
     def filter(self, message):
         return message.chat_id in allowed_chat_ids
 
-class BotNameFilter(BaseFilter):
+class BotNameFilter(MessageFilter):
     def __init__(self, bot_names):
         self.bot_names = bot_names
 
     def filter(self, message):
         return any(bot_name.lower() in message.text.lower() for bot_name in self.bot_names)
+
 
 # Replace with your desired bot names
 bot_names = ["гарсон", "garcon", "garcón", "@garcon_devops_bot"]

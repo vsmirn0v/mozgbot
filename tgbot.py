@@ -11,7 +11,7 @@ class AllowedChatIDFilter(MessageFilter):
 
 
 # Set up logging
-logging.basicConfig(level=logging.WARN, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Load your OpenAI API key and Telegram token
 openai.api_key = os.environ["OPENAI_API_KEY"]
@@ -91,7 +91,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     
     tokens_used = openai_response.get("usage", {}).get("total_tokens", 0)
     
-    logging.warn(f"Incoming message: User ID: {user_id}, Chat ID: {chat_id}, Time consumed: {elapsed_time:.2f} seconds, Tokens consumed: {tokens_used}, Message: {response}")
+    logging.info(f"Incoming message: User ID: {user_id}, Chat ID: {chat_id}, Time consumed: {elapsed_time:.2f} seconds, Tokens consumed: {tokens_used}, Message: {response}")
 
     # Add AI response to the conversation history
     history += f"{response}\n"

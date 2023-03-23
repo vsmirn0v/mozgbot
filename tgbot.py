@@ -2,6 +2,7 @@ import os
 import json
 import openai
 import logging
+import time
 from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, BaseFilter, MessageFilter
 class AllowedChatIDFilter(MessageFilter):

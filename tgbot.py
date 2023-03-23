@@ -114,24 +114,27 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     history = conversation_history.get(str(chat_id), "")
 
     # Add user message to the conversation history
-    history += f"{user_name}: {user_message}\nAI: "
+    #history += f"{user_name}: {user_message}\nAI: "
+    history = history.append({"role": "user", "content": f"{user_name}: {user_message}"})
 
     # Record the start time
     start_time = time.perf_counter()
     
+    messages = training_prompts.append(history)
     # GPT-related code
     openai_params = {}
-    openai_params["engine"] = "gpt-3.5-turbo"
-    openai_params["prompt"] = (f"{training_prompts}\n{history}")
-    openai_params["max_tokens"] = 1024
-    openai_params["n"] = 1
-    openai_params["stop"] = None
-    openai_params["temperature"] = 0.5
+    openai_params["model"] = "gpt-3.5-turbo"
+    openai_params["messages"] = messages
+    #openai_params["max_tokens"] = 1024
+    #openai_params["messsage"] = 1024
+   # openai_params["n"] = 1
+   # openai_params["stop"] = None
+   # openai_params["temperature"] = 0.5
 
     job = context.job_queue.run_repeating(send_still_processing, interval=10, first=0, context={"chat_id": update.message.chat_id})
 
     try:
-        openai_response = openai.Completion.create(**openai_params)
+        openai_response = openai.ChatCompletion.create(**openai_params)
     except openai.error.InvalidRequestError as e:
         # If the error is due to maximum content length, truncate the conversation history and retry the request
         if "maximum context length is" in str(e):
@@ -148,7 +151,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
             logging.info(f"HSTT: {conversation_history_truncated}")
 
             openai_params["prompt"] = (f"{training_prompts}\n{list(reversed(conversation_history_truncated))}")
-            openai_response = openai.Completion.create(**openai_params)
+            openai_response = openai.ChatCompletion.create(**openai_params)
             history = conversation_history_truncated
         else:
             job.schedule_removal()
@@ -163,7 +166,8 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     logging.info(f"Response: User: {user_name}, Chat: {chat_name}, Time consumed: {elapsed_time:.2f} seconds, Tokens consumed: {tokens_used}, Message: {response}")
 
     # Add AI response to the conversation history
-    history += f"{response}\n"
+    #history += f"{response}\n"
+    history = history.append({"role": "assistant", "content": response})
 
     # Update conversation history for the user or channel
     conversation_history[str(chat_id)] = history

@@ -14,7 +14,7 @@ class IsReplyFilter(MessageFilter):
 
 class AllowedChatIDFilter(MessageFilter):
     def filter(self, message):
-        return message.chat_id in allowed_chat_ids
+        return message.chat_id in allowed_chat_ids or message.from_user.name in allowed_user_names
 
 class BotNameFilter(MessageFilter):
     def __init__(self, bot_names):
@@ -47,8 +47,13 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 openai.api_key = os.environ["OPENAI_API_KEY"]
 telegram_token = os.environ["TELEGRAM_TOKEN"]
 allowed_chat_ids = os.environ["TELEGRAM_CHAT_IDS"]
+allowed_user_names = os.environ["TELEGRAM_USER_NAMES"]
+
 TELEGRAM_CHAT_IDS = os.environ.get("TELEGRAM_CHAT_IDS", "")
+TELEGRAM_USER_NAMES = os.environ.get("TELEGRAM_USER_NAMES", "")
+
 allowed_chat_ids = [int(chat_id.strip()) for chat_id in TELEGRAM_CHAT_IDS.split(",") if chat_id.strip()]
+allowed_user_names = [int(user_name.strip()) for user_name in TELEGRAM_USER_NAMES.split(",") if user_name.strip()]
 
 # Load the training prompts from a JSON configuration file
 with open("training_prompts.json", "r") as f:
@@ -77,7 +82,7 @@ def unauthorized_chat(update: Update, context: CallbackContext):
     
 class UnauthorizedChatIDFilter(MessageFilter):
     def filter(self, message):
-        return message.chat_id not in allowed_chat_ids
+        return message.chat_id not in allowed_chat_ids or message.from_user.name not in allowed_user_names
 
 unauthorized_chat_ids_filter = UnauthorizedChatIDFilter()
 

@@ -106,15 +106,30 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     start_time = time.perf_counter()
     
     # GPT-related code
-    openai_response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=(f"{training_prompts}\n{history}"),
-        max_tokens=512,
-        n=1,
-        stop=None,
-        temperature=0.5,
-    )
+    openai_params["engine"] = "text-davinci-003"
+    openai_params["prompt"] = (f"{training_prompts}\n{history}")
+    openai_params["max_tokens"] = 768
+    openai_params["n"] = 1
+    openai_params["stop"] = None
+    openai_params["temperature"] = 0.5
 
+    try:
+        openai_response = openai.Completion.create(**openai_params)
+    except openai.error.InvalidRequestError as e:
+        # If the error is due to maximum content length, truncate the conversation history and retry the request
+        if "content must be at most" in str(e):
+            max_tokens = int(str(e).split("content must be at most ")[1].split(" tokens")[0]) - sum(len(token) for token in training_prompts)
+            conversation_history_truncated = []
+            for message in reversed(conversation_history):
+                if sum(len(token) for token in conversation_history_truncated) < max_tokens:
+                    conversation_history_truncated.append(message)
+                else:
+                    break
+            openai_params["prompt"] = (f"{training_prompts}\n{list(reversed(conversation_history_truncated))}")
+            openai_response = openai.Completion.create(**openai_params)
+            conversation_history = conversation_history_truncated
+        else:
+            raise e
     response = openai_response.choices[0].text.strip()
     
     elapsed_time = time.perf_counter() - start_time

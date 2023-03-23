@@ -141,25 +141,28 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     except Exception as e:
         job.schedule_removal()
         logging.info(f"{openai_response}")
-        update.message.reply_text(f"Возникли проблемы, попробуйте повторить запрос позже.")
+        if e is openai.error.InvalidRequestError:
+            if "maximum context length is" in str(e):
+                logging.info(f"Maimum tokens reached. Truncating context and retrying...")
+                update.message.reply_text(f"Мой контекст переполнился. Я удалю из него историю старых сообщений и попробую снова...")
+                max_tokens = int(str(e).split("maximum context length is ")[1].split(" tokens")[0]) - sum(len(token) for token in training_prompts) - 800
+                #max_tokens = openai_params["max_tokens"] - sum(len(token) for token in training_prompts)
+                conversation_history_truncated = []
+                logging.info(f"HST: {history}")
+                for message in reversed(history):
+                    if sum(len(token) for token in conversation_history_truncated) < max_tokens:
+                        conversation_history_truncated.append(message)
+                    else:
+                        break
+                logging.info(f"HSTT: {conversation_history_truncated}")
+                openai_params["messages"] = training_prompts + conversation_history_truncated
+                openai_response = openai.ChatCompletion.create(**openai_params)
+                history = conversation_history_truncated
+        else:
+            update.message.reply_text(f"Возникли проблемы, попробуйте повторить запрос позже.")
     # except openai.error.InvalidRequestError as e:
     #     # If the error is due to maximum content length, truncate the conversation history and retry the request
-    #     if "maximum context length is" in str(e):
-    #         logging.info(f"Maimum tokens reached. Truncating context and retrying...")
-    #         max_tokens = int(str(e).split("maximum context length is ")[1].split(" tokens")[0]) - sum(len(token) for token in training_prompts)
-    #         #max_tokens = openai_params["max_tokens"] - sum(len(token) for token in training_prompts)
-    #         conversation_history_truncated = []
-    #         logging.info(f"HST: {history}")
-    #         for message in reversed(history):
-    #             if sum(len(token) for token in conversation_history_truncated) < max_tokens:
-    #                 conversation_history_truncated.append(message)
-    #             else:
-    #                 break
-    #         logging.info(f"HSTT: {conversation_history_truncated}")
 
-    #         openai_params["prompt"] = (f"{training_prompts}\n{list(reversed(conversation_history_truncated))}")
-    #         openai_response = openai.ChatCompletion.create(**openai_params)
-    #         history = conversation_history_truncated
     #     else:
     #        job.schedule_removal()
     #        raise e

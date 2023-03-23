@@ -5,6 +5,7 @@ import logging
 import time
 from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, BaseFilter, MessageFilter
+
 class IsReplyFilter(MessageFilter):
     def filter(self, message):
         return message.reply_to_message is not None
@@ -19,6 +20,11 @@ class BotNameFilter(MessageFilter):
 
     def filter(self, message):
         return any(bot_name.lower() in message.text.lower() for bot_name in self.bot_names)
+
+def send_still_processing(context: CallbackContext):
+    """Sends a 'still processing' message to the chat."""
+    job = context.job
+    context.bot.send_message(chat_id=job.context["chat_id"], text="Still processing, please wait...")
 
 
 # Replace with your desired bot names
@@ -79,7 +85,7 @@ def log_incoming_message(update: Update, context: CallbackContext):
     message_text = update.message.text
     logging.info(f"Incoming message: User: {user_name}, Chat: {chat_name}, Message: {message_text}")
 
-def chat_with_gpt(update: Update, context: CallbackContext) -> None:
+async def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     if update.channel_post:  # Check if the update comes from a channel
         user_message = update.channel
         user_message = update.channel_post.text
@@ -119,6 +125,8 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     openai_params["stop"] = None
     openai_params["temperature"] = 0.5
 
+    job = context.job_queue.run_repeating(send_still_processing, interval=2, first=0, context={"chat_id": update.message.chat_id})
+
     try:
         openai_response = openai.Completion.create(**openai_params)
     except openai.error.InvalidRequestError as e:
@@ -144,7 +152,8 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     response = openai_response.choices[0].text.strip()
     
     elapsed_time = time.perf_counter() - start_time
-    
+    job.schedule_removal()
+
     tokens_used = openai_response.get("usage", {}).get("total_tokens", 0)
     
     logging.info(f"Response: User: {user_name}, Chat: {chat_name}, Time consumed: {elapsed_time:.2f} seconds, Tokens consumed: {tokens_used}, Message: {response}")

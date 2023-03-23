@@ -162,7 +162,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     tries = 3
     for i in range(tries):
         try:
-            openai_response = openai.ChatCompletion.create(**openai_params, timeout=42)
+            openai_response = openai.ChatCompletion.create(**openai_params, timeout=50)
         except Exception as e:
             logging.info(f"{str(e)}")
             if "maximum context length is" in str(e):

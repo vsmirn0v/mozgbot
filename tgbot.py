@@ -62,7 +62,7 @@ unauthorized_chat_ids_filter = UnauthorizedChatIDFilter()
 def start(update: Update, context: CallbackContext) -> None:
     chat_id = update.message.chat_id
 
-    update.message.reply_text(f"Хола человеки! Чем я могу помочь вам сегодня? chat_id: {chat_id}")
+    update.message.reply_text(f"Хола человеки! Чем я могу помочь вам сегодня?")
     logging.info(f"Start initiated from chat_id: {chat_id}")
     
 def log_incoming_message(update: Update, context: CallbackContext):
@@ -81,6 +81,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
         chat_id = update.message.chat.id
         
     user_id = update.message.from_user.id
+    logging.info(f"Incoming message: User ID: {user_id}, Chat ID: {chat_id}, Message: {user_message}")
 
     # Retrieve conversation history or create an empty history
     history = conversation_history.get(str(chat_id), "")

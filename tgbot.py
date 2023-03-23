@@ -19,8 +19,6 @@ class BotNameFilter(BaseFilter):
 # Replace with your desired bot names
 bot_names = ["гарсон", "garcon", "garcón", "@garcon_devops_bot"]
 
-bot_name_filter = BotNameFilter(bot_names)
-
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -131,6 +129,7 @@ dispatcher = updater.dispatcher
 # Add handlers
 dispatcher.add_handler(CommandHandler("start", start))
 allowed_chat_ids_filter = AllowedChatIDFilter()
+bot_name_filter = BotNameFilter(bot_names)
 
 dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & unauthorized_chat_ids_filter, unauthorized_chat))
 dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & allowed_chat_ids_filter & bot_name_filter, chat_with_gpt))

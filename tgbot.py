@@ -7,7 +7,7 @@ from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, BaseFilter, MessageFilter
 class IsReplyFilter(MessageFilter):
     def filter(self, message):
-        reply_to_message = update.message.reply_to_message
+        reply_to_message = message.reply_to_message
         is_reply = reply_to_message and reply_to_message.from_user.id == context.bot.id
         return is_reply
 

@@ -30,7 +30,7 @@ def send_still_processing(context: CallbackContext):
 
 def num_tokens_from_list(in_list: list) -> int:
     """Returns the number of tokens in a text string."""
-    encoding_name = "gpt-3.5-turbo"
+    encoding_name = "gpt3"
     encoding = tiktoken.get_encoding(encoding_name)
     num_tokens = 0
     for message in in_list:

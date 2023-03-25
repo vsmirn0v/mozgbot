@@ -170,7 +170,9 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
             if num_tokens_from_list(conversation_history_truncated) < max_tokens:
                 conversation_history_truncated.append(message)
             else:
+                logging.info(f"Automatically trucated context token count to: {num_tokens_from_list(training_prompts + history)}")
                 break
+
     job = context.job_queue.run_repeating(send_still_processing, interval=15, first=0, context={"chat_id": update.message.chat_id})
 
     tries = 3
@@ -190,6 +192,8 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
                     if num_tokens_from_list(conversation_history_truncated) < max_tokens:
                         conversation_history_truncated.append(message)
                     else:
+                        logging.info(f"Trucated context token count to: {num_tokens_from_list(training_prompts + history)}")
+                        logging.info(f"conversation_history_truncated: {conversation_history_truncated}")
                         break
                 #logging.info(f"HSTT: {conversation_history_truncated}")
                 logging.info(f"MTOKENS: {max_tokens} TOKENS: {num_tokens_from_list(training_prompts + conversation_history_truncated)}")

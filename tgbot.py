@@ -131,7 +131,6 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
         logging.info(f"Reply to other user message. Discarding {chat_name}.")
         return False
 
-    logging.info(f"Request: User: {user_name}, Chat: {chat_name}, Is reply: {is_reply}, Message: {user_message}")
 
     # Retrieve conversation history or create an empty history
     if chat_name is None:
@@ -162,8 +161,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
    # openai_params["stop"] = None
     #logging.info(json.dumps(openai_params["messages"]))
     #max_tokens = 4096 - num_tokens_from_list(training_prompts) - 1024
-   #logging.info(f"MTOKENS: {max_tokens} TOKENS: {num_tokens_from_list(training_prompts + history)}")
-
+    logging.info(f"Request: User: {user_name}, Chat: {chat_name}, Is reply: {is_reply}, Predicted token count: {num_tokens_from_list(training_prompts + history)}, Message: {user_message}")
 
     if num_tokens_from_list(training_prompts + history) > 7000:
         max_tokens = 7800 - num_tokens_from_list(training_prompts)

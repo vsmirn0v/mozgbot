@@ -152,7 +152,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     openai_params["model"] = "gpt-3.5-turbo"
     openai_params["messages"] = training_prompts + history
     openai_params["temperature"] = 0.5
-    openai_params["max_tokens"] = 1024
+    openai_params["max_tokens"] = 2048
     openai_params["presence_penalty"] = 0.6
     #openai_params["messsage"] = 1024
    # openai_params["n"] = 1
@@ -161,7 +161,7 @@ def chat_with_gpt(update: Update, context: CallbackContext) -> None:
     #max_tokens = 4096 - num_tokens_from_list(training_prompts) - 1024
     logging.info(f"Request: User: {user_name}, Chat: {chat_name}, Is reply: {is_reply}, Predicted token count: {num_tokens_from_list(training_prompts + history)}, Message: {user_message}")
 
-    if num_tokens_from_list(training_prompts + history) > 7000:
+    if num_tokens_from_list(training_prompts + history) > 6000:
         max_tokens = 7800 - num_tokens_from_list(training_prompts)
         conversation_history_truncated = []
         for message in reversed(history):

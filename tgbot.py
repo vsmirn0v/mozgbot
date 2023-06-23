@@ -6,7 +6,7 @@ import time
 import tiktoken
 
 from telegram import Update, ForceReply
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, BaseFilter, MessageFilter
+from telegram.ext import Updater, CommandHandler, MessageHandler, filters, CallbackContext, BaseFilter, MessageFilter
 
 class IsReplyFilter(MessageFilter):
     def filter(self, message):
@@ -244,9 +244,9 @@ dispatcher = updater.dispatcher
 # Add handlers
 dispatcher.add_handler(CommandHandler("start", start))
 
-dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & unauthorized_chat_ids_filter, unauthorized_chat))
-dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & AllowedChatIDFilter() & (BotNameFilter(bot_names) | IsReplyFilter()), chat_with_gpt))
-dispatcher.add_handler(MessageHandler(Filters.all, log_incoming_message))
+dispatcher.add_handler(MessageHandler((filters.text & ~filters.command) & unauthorized_chat_ids_filter, unauthorized_chat))
+dispatcher.add_handler(MessageHandler((filters.text & ~filters.command) & AllowedChatIDFilter() & (BotNameFilter(bot_names) | IsReplyFilter()), chat_with_gpt))
+dispatcher.add_handler(MessageHandler(filters.all, log_incoming_message))
 
 # Start the Bot
 updater.start_polling()

@@ -6,7 +6,7 @@ import time
 import tiktoken
 
 from telegram import Update, ForceReply
-from telegram.ext import Updater, CommandHandler, MessageHandler, filters, CallbackContext, MessageFilter
+from telegram.ext import Updater, CommandHandler, MessageHandler, filters, CallbackContext, filters.MessageFilter
 
 class IsReplyFilter(MessageFilter):
     def filter(self, message):

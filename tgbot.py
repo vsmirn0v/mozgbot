@@ -6,17 +6,17 @@ import time
 import tiktoken
 
 from telegram import Update, ForceReply
-from telegram.ext import Updater, CommandHandler, MessageHandler, filters, CallbackContext
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, MessageFilter
 
-class IsReplyFilter(filters.MessageFilter):
+class IsReplyFilter(MessageFilter):
     def filter(self, message):
         return message.reply_to_message is not None or message.chat.title is None
 
-class AllowedChatIDFilter(filters.MessageFilter):
+class AllowedChatIDFilter(MessageFilter):
     def filter(self, message):
         return message.chat_id in allowed_chat_ids or message.from_user.name in allowed_user_names
 
-class BotNameFilter(filters.MessageFilter):
+class BotNameFilter(MessageFilter):
     def __init__(self, bot_names):
         self.bot_names = bot_names
 
@@ -80,7 +80,7 @@ def unauthorized_chat(update: Update, context: CallbackContext):
 
     update.message.reply_text("Доступ запрещен.")
     
-class UnauthorizedChatIDFilter(filters.MessageFilter):
+class UnauthorizedChatIDFilter(MessageFilter):
     def filter(self, message):
         return not (message.chat_id in allowed_chat_ids or message.from_user.name in allowed_user_names)
 
@@ -244,9 +244,9 @@ dispatcher = updater.dispatcher
 # Add handlers
 dispatcher.add_handler(CommandHandler("start", start))
 
-dispatcher.add_handler(MessageHandler((filters.text & ~filters.command) & unauthorized_chat_ids_filter, unauthorized_chat))
-dispatcher.add_handler(MessageHandler((filters.text & ~filters.command) & AllowedChatIDFilter() & (BotNameFilter(bot_names) | IsReplyFilter()), chat_with_gpt))
-dispatcher.add_handler(MessageHandler(filters.all, log_incoming_message))
+dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & unauthorized_chat_ids_filter, unauthorized_chat))
+dispatcher.add_handler(MessageHandler((Filters.text & ~Filters.command) & AllowedChatIDFilter() & (BotNameFilter(bot_names) | IsReplyFilter()), chat_with_gpt))
+dispatcher.add_handler(MessageHandler(Filters.all, log_incoming_message))
 
 # Start the Bot
 updater.start_polling()

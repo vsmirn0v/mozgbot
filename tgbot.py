@@ -6,17 +6,17 @@ import time
 import tiktoken
 
 from telegram import Update, ForceReply
-from telegram.ext import Updater, CommandHandler, MessageHandler, filters, CallbackContext, filters.MessageFilter
+from telegram.ext import Updater, CommandHandler, MessageHandler, filters, CallbackContext
 
-class IsReplyFilter(MessageFilter):
+class IsReplyFilter(filters.MessageFilter):
     def filter(self, message):
         return message.reply_to_message is not None or message.chat.title is None
 
-class AllowedChatIDFilter(MessageFilter):
+class AllowedChatIDFilter(filters.MessageFilter):
     def filter(self, message):
         return message.chat_id in allowed_chat_ids or message.from_user.name in allowed_user_names
 
-class BotNameFilter(MessageFilter):
+class BotNameFilter(filters.MessageFilter):
     def __init__(self, bot_names):
         self.bot_names = bot_names
 
@@ -80,7 +80,7 @@ def unauthorized_chat(update: Update, context: CallbackContext):
 
     update.message.reply_text("Доступ запрещен.")
     
-class UnauthorizedChatIDFilter(MessageFilter):
+class UnauthorizedChatIDFilter(filters.MessageFilter):
     def filter(self, message):
         return not (message.chat_id in allowed_chat_ids or message.from_user.name in allowed_user_names)
 
